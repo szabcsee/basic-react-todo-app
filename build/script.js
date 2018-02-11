@@ -1,13 +1,48 @@
 var Todo = React.createClass({displayName: "Todo",
+	getInitialState : function() {
+		return {editing : false}
+	},
+	edit : function() {
+		alert('Edit removed');
+		this.setState({editing: true})
+	},
 	
-	render : function() {
-		
+	remove : function() {
+		alert('Todo removed');
+	},
+	save : function() {
+		var val = this.refs.newValue.getDOMNode().value;
+		alert('Todo ' + val + ' saved!');
+		this.setState({editing: false})
+	},
+	todoDisplay : function() {
 		return (
-				React.createElement("ul", null, 
-					React.createElement("li", {className: "todo"}, this.props.todo)
-				)
+			React.createElement("li", {className: "todo"}, 
+				React.createElement("span", {onClick: this.edit}, 
+					this.props.children
+				), 
+				React.createElement("button", {onClick: this.remove, className: "btn btn-default btn-sm glyphicon glyphicon-trash remove pull-right"})
+			)
 		);
+	},
+	todoForm : function() {
+		return (
+			React.createElement("li", {className: "todo"}, 
+				React.createElement("span", null, 
+					React.createElement("input", {type: "text", placeholder: "Edit Todo", ref: "newValue", defaultValue: this.props.children})
+				), 
+				React.createElement("button", {onClick: this.save, className: "btn btn-default btn-sm glyphicon glyphicon-floppy-disk pull-right"})
+			)
+		);
+	},
+	render : function() {
+		if(this.state.editing) {
+			return this.todoForm();
+		} else {
+			return this.todoDisplay();
+		}
 	}
+	
 });
 React.render(React.createElement("div", null, 
 				React.createElement("h1", null, "Things to DO"), 
@@ -19,5 +54,9 @@ React.render(React.createElement("div", null,
 						React.createElement("button", {className: "btn btn-default btn-sm"}, "+")
 					)
 				), 
-				React.createElement(Todo, {todo: "Call Henry"})
+			React.createElement("ul", null, 
+				React.createElement(Todo, null, "Call Henry"), 
+				React.createElement(Todo, null, "pay phonebill"), 
+				React.createElement(Todo, null, "Make dentist apt")
+			)
 			),	document.getElementById('todo'));
